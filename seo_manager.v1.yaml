@@ -1,0 +1,856 @@
+openapi: 3.0.0
+info:
+  title: seo_manager
+  version: '1.0'
+  description: SEO管理画面の情報を返すAPI
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /login:
+    post:
+      summary: ログイン
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          headers: {}
+      description: ログイン処理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                pass:
+                  type: string
+                authority:
+                  type: string
+              required:
+                - id
+                - pass
+                - authority
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+      parameters: []
+  '/keyword_list/{page}':
+    get:
+      summary: 順位データ　すべての要素
+      tags: []
+      responses: {}
+      operationId: get-keyword_list
+      description: 順位データ　すべての要素
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/keyword_list'
+      parameters: []
+    parameters:
+      - schema:
+          type: integer
+        name: page
+        in: path
+  '/rank_up_down/{date}':
+    get:
+      summary: 順位変動
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  up:
+                    $ref: '#/components/schemas/rank100'
+                  down:
+                    $ref: '#/components/schemas/rank100'
+      operationId: get-rank_up_down
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      description: 順位変動
+    parameters:
+      - schema:
+          type: string
+        name: date
+        in: path
+        required: true
+  /site_info:
+    parameters: []
+    post:
+      summary: 契約情報
+      operationId: post-site_info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/site_info'
+      description: 契約情報を取得
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                site_id:
+                  type: integer
+                date:
+                  type: string
+  /monthly_rank:
+    post:
+      summary: 月間順位変動
+      operationId: post-monthly_rank
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  'Y':
+                    $ref: '#/components/schemas/monthry_rank'
+                  G:
+                    $ref: '#/components/schemas/monthry_rank'
+      description: 月間順位変動
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                site_id:
+                  type: integer
+                start:
+                  type: string
+                ndn:
+                  type: string
+  /monthly_acquisition:
+    post:
+      summary: 月間取得データ
+      operationId: post-monthly_acquisition
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  総合Y:
+                    $ref: '#/components/schemas/monthry_rank'
+                  大阪Y:
+                    $ref: '#/components/schemas/monthry_rank'
+                  東京Y:
+                    $ref: '#/components/schemas/monthry_rank'
+                  総合G:
+                    $ref: '#/components/schemas/monthry_rank'
+                  大阪G:
+                    $ref: '#/components/schemas/monthry_rank'
+                  東京G:
+                    $ref: '#/components/schemas/monthry_rank'
+                  モバイルG:
+                    $ref: '#/components/schemas/monthry_rank'
+      description: 月間取得データ
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                site_id:
+                  type: integer
+                date:
+                  type: string
+  '/user_info/{user_id}':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    get:
+      summary: ユーザー情報
+      tags: []
+      responses: {}
+      operationId: get-user_info-user_id
+      description: ユーザーの編集
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_info'
+  '/site_list/{user_id}':
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+    get:
+      summary: 契約サイトリスト
+      tags: []
+      responses: {}
+      operationId: get-site_list-user_id
+      description: 契約サイトリスト
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/site_info'
+  '/agency_list/{page}':
+    get:
+      summary: 代理店の一覧
+      tags: []
+      responses: {}
+      operationId: get-agency_list
+      description: 代理店の一覧
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/agency_list'
+    parameters:
+      - schema:
+          type: string
+        name: page
+        in: path
+        required: true
+  '/user_list/{page}':
+    parameters:
+      - schema:
+          type: string
+        name: page
+        in: path
+        required: true
+    get:
+      summary: ユーザーの一覧
+      tags: []
+      responses: {}
+      operationId: get-user_list-page
+      description: ユーザーの一覧
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_list'
+  /user_add:
+    post:
+      summary: ''
+      operationId: post-add_user
+      responses:
+        '200':
+          description: OK
+      description: ユーザーの追加
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_info'
+    parameters: []
+  /user_update:
+    post:
+      summary: ''
+      operationId: post-update_user
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_info'
+    parameters: []
+  '/user_delete/{user_id}':
+    delete:
+      summary: ''
+      operationId: delete-delete_user
+      responses:
+        '200':
+          description: OK
+      description: ユーザー削除
+    parameters:
+      - schema:
+          type: string
+        name: user_id
+        in: path
+        required: true
+  '/agency_info/{agency_id}':
+    parameters:
+      - schema:
+          type: string
+        name: agency_id
+        in: path
+        required: true
+    get:
+      summary: 代理店の詳細
+      tags: []
+      responses: {}
+      operationId: get-agency_info-agency_id
+      description: 代理店の詳細
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/agency_info'
+        description: ''
+  /agency_update:
+    post:
+      summary: ''
+      operationId: post-agency_update
+      responses:
+        '200':
+          description: OK
+      description: 代理店情報更新
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/agency_info'
+  '/agency_delete/{agency_id}':
+    delete:
+      summary: ''
+      operationId: delete-agency_delete
+      responses:
+        '200':
+          description: OK
+      description: 代理店削除
+    parameters:
+      - schema:
+          type: string
+        name: agency_id
+        in: path
+        required: true
+  /site_add:
+    post:
+      summary: ''
+      operationId: post-site_add
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/site_info'
+  /site_update:
+    post:
+      summary: ''
+      operationId: post-site_update
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/site_info'
+  '/site_delete/{site_id}':
+    delete:
+      summary: ''
+      operationId: delete-site_delete
+      responses:
+        '200':
+          description: OK
+    parameters:
+      - schema:
+          type: string
+        name: site_id
+        in: path
+        required: true
+  /admin_list:
+    get:
+      summary: 管理者追加
+      tags: []
+      responses: {}
+      operationId: get-admin_list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin_info'
+      description: 管理者追加
+  /admin_add:
+    post:
+      summary: ''
+      operationId: post-admin_add
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin_info'
+  /admin_update:
+    post:
+      summary: 管理者情報更新
+      operationId: post-admin_update
+      responses:
+        '200':
+          description: OK
+      description: 管理者情報更新
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/admin_info'
+  '/admin_delete/{admin_id}':
+    parameters:
+      - schema:
+          type: string
+        name: admin_id
+        in: path
+        required: true
+    delete:
+      summary: 管理者削除
+      operationId: delete-admin_delete-admin_id
+      responses:
+        '200':
+          description: OK
+      description: 管理者削除
+  '/management_site_list/{admin_id}':
+    parameters:
+      - schema:
+          type: string
+        name: admin_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-management_site_list-admin_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/keyword_list'
+components:
+  schemas:
+    rank100:
+      title: rank100
+      type: object
+      description: ランクアップとダウン
+      properties:
+        sid:
+          type: integer
+        キーワード:
+          type: string
+        Y最終順:
+          type: string
+        G最終順:
+          type: string
+    keyword_list:
+      title: keyword_list
+      type: object
+      properties:
+        list:
+          type: object
+          properties:
+            サイトID:
+              type: integer
+            キーワード:
+              type: string
+            URL:
+              type: string
+            Y最終順位:
+              type: string
+            G最終順位:
+              type: string
+            ユーザー名:
+              type: string
+            名前:
+              type: string
+            代理店名:
+              type: string
+            担当者:
+              type: string
+            課金条件:
+              type: string
+            計算方法:
+              type: string
+            最大課金額:
+              type: string
+            上限設定:
+              type: string
+            Y保証順位:
+              type: string
+            G保証順位:
+              type: string
+            連日保証:
+              type: string
+            Y上位化回数:
+              type: string
+            G上位化回数:
+              type: string
+            経過課金額:
+              type: string
+            着地予想:
+              type: string
+            達成率:
+              type: string
+            最終成果発生日:
+              type: string
+            契約日:
+              type: string
+            契約終了予定日:
+              type: string
+        件数:
+          type: integer
+        ページ数:
+          type: integer
+        表示中のページ:
+          type: integer
+    daily_billing_table:
+      title: daily_billing_table
+      type: object
+      properties:
+        list_data:
+          type: object
+          properties:
+            サイトID:
+              type: integer
+            ユーザー名:
+              type: string
+            名前:
+              type: string
+            担当者:
+              type: string
+            キーワード:
+              type: string
+            URL:
+              type: string
+            課金条件:
+              type: string
+            計算方法:
+              type: string
+            Y保証順位:
+              type: string
+            G保証順位:
+              type: string
+            最大課金額:
+              type: string
+            上限設定:
+              type: string
+            1日課金:
+              type: string
+            2日課金:
+              type: string
+            3日課金:
+              type: string
+            4日課金:
+              type: string
+            5日課金:
+              type: string
+            6日課金:
+              type: string
+            7日課金:
+              type: string
+            8日課金:
+              type: string
+            9日課金:
+              type: string
+            10日課金:
+              type: string
+            11日課金:
+              type: string
+            12日課金:
+              type: string
+            13日課金:
+              type: string
+            14日課金:
+              type: string
+            15日課金:
+              type: string
+            16日課金:
+              type: string
+            17日課金:
+              type: string
+            18日課金:
+              type: string
+            19日課金:
+              type: string
+            20日課金:
+              type: string
+            21日課金:
+              type: string
+            22日課金:
+              type: string
+            23日課金:
+              type: string
+            24日課金:
+              type: string
+            25日課金:
+              type: string
+            26日課金:
+              type: string
+            27日課金:
+              type: string
+            28日課金:
+              type: string
+            29日課金:
+              type: string
+            30日課金:
+              type: string
+            31日課金:
+              type: string
+            契約日:
+              type: string
+            '':
+              type: string
+        件数:
+          type: integer
+        ページ数:
+          type: integer
+        表示中のページ:
+          type: integer
+    site_info:
+      title: site_info
+      type: object
+      description: 契約情報
+      properties:
+        id:
+          type: integer
+        キーワード:
+          type: string
+        URL:
+          type: string
+        課金条件:
+          type: string
+        保証順位Y:
+          type: integer
+        保証順位G:
+          type: integer
+        課金金額Y:
+          type: integer
+        課金金額G:
+          type: integer
+        計算方法:
+          type: string
+        連日保証:
+          type: integer
+        課金開始の判定:
+          type: string
+        順位の優先:
+          type: string
+        担当者ID:
+          type: integer
+        担当者名:
+          type: string
+        対策開始日:
+          type: string
+        契約終了日:
+          type: string
+        部分一致:
+          type: string
+    site_rank:
+      title: site_rank
+      type: object
+      description: 契約サイトの順位を取得
+      properties:
+        id:
+          type: integer
+        期間:
+          type: string
+        上位化数Y:
+          type: integer
+        上位化数G:
+          type: integer
+    daily_rank:
+      title: daily_rank
+      type: object
+      properties:
+        id:
+          type: integer
+        順位:
+          type: integer
+        計測日時:
+          type: string
+        取得UR:
+          type: string
+    monthry_rank:
+      title: monthry_rank
+      type: object
+      properties:
+        '1':
+          $ref: '#/components/schemas/daily_rank'
+        '2':
+          $ref: '#/components/schemas/daily_rank'
+        '3':
+          $ref: '#/components/schemas/daily_rank'
+        '4':
+          $ref: '#/components/schemas/daily_rank'
+        '5':
+          $ref: '#/components/schemas/daily_rank'
+        '6':
+          $ref: '#/components/schemas/daily_rank'
+        '7':
+          $ref: '#/components/schemas/daily_rank'
+        '8':
+          $ref: '#/components/schemas/daily_rank'
+        '9':
+          $ref: '#/components/schemas/daily_rank'
+        '10':
+          $ref: '#/components/schemas/daily_rank'
+        '11':
+          $ref: '#/components/schemas/daily_rank'
+        '12':
+          $ref: '#/components/schemas/daily_rank'
+        '13':
+          $ref: '#/components/schemas/daily_rank'
+        '14':
+          $ref: '#/components/schemas/daily_rank'
+        '15':
+          $ref: '#/components/schemas/daily_rank'
+        '16':
+          $ref: '#/components/schemas/daily_rank'
+        '18':
+          $ref: '#/components/schemas/daily_rank'
+        '19':
+          $ref: '#/components/schemas/daily_rank'
+        '20':
+          $ref: '#/components/schemas/daily_rank'
+        '21':
+          $ref: '#/components/schemas/daily_rank'
+        '22':
+          $ref: '#/components/schemas/daily_rank'
+        '23':
+          $ref: '#/components/schemas/daily_rank'
+        '24':
+          $ref: '#/components/schemas/daily_rank'
+        '25':
+          $ref: '#/components/schemas/daily_rank'
+        '26':
+          $ref: '#/components/schemas/daily_rank'
+        '27':
+          $ref: '#/components/schemas/daily_rank'
+        '28':
+          $ref: '#/components/schemas/daily_rank'
+        '29':
+          $ref: '#/components/schemas/daily_rank'
+        '30':
+          $ref: '#/components/schemas/daily_rank'
+        '31':
+          $ref: '#/components/schemas/daily_rank'
+    user_info:
+      title: user_info
+      type: object
+      properties:
+        ユーザーID:
+          type: integer
+        ユーザー名:
+          type: string
+        ログイン名:
+          type: string
+        パスワード:
+          type: string
+        管理画面のURL:
+          type: string
+        ロゴマーク画像:
+          type: string
+        E-mail:
+          type: string
+        契約開始日:
+          type: string
+        支払い期日:
+          type: integer
+        所属する代理店:
+          type: integer
+    agency_list:
+      title: agency_list
+      type: object
+      properties:
+        id:
+          type: integer
+        代理店名:
+          type: string
+        代理店ID:
+          type: string
+        契約開始日:
+          type: string
+        契約終了日:
+          type: string
+        ユーザー数:
+          type: string
+        総月額:
+          type: integer
+        総課金額:
+          type: integer
+        課金率:
+          type: string
+    user_list:
+      title: user_list
+      type: object
+      properties:
+        id:
+          type: integer
+        名前:
+          type: string
+        ユーザー名:
+          type: string
+        契約開始日:
+          type: string
+        代理店:
+          type: string
+        契約数:
+          type: integer
+        総月額:
+          type: integer
+        総課金額:
+          type: integer
+    agency_info:
+      title: agency_info
+      type: object
+      properties:
+        id:
+          type: integer
+        代理店ID:
+          type: string
+        代理店の名前:
+          type: string
+        管理画面のURL代理店:
+          type: string
+        管理画面のURユーザー:
+          type: string
+        ロゴマーク画像:
+          type: string
+        E-mail:
+          type: string
+        契約日:
+          type: string
+        契約終了日:
+          type: string
+        支払期日:
+          type: integer
+        料金の表示設定:
+          type: integer
+    admin_info:
+      title: admin
+      type: object
+      properties:
+        id:
+          type: integer
+        名前:
+          type: string
+        登録日:
+          type: string
+  securitySchemes:
+    API Key - 1:
+      name: API Key
+      type: apiKey
+      in: header
+security:
+  - API Key - 1: []
